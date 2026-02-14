@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#020617">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <title>ZenSleep Pro</title>
+    <link rel="manifest" href="manifest.json">
+    
+    <style>
+        :root {
+            --bg: #020617;
+            --card: #0f172a;
+            --accent: #38bdf8;
+            --danger: #f43f5e;
+            --text: #f8fafc;
+        }
+
+        /* Empêche le défilement "rebond" sur mobile et fixe la taille */
+        html, body { 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            overflow-x: hidden;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        .main-container { 
+            width: 100%; 
+            max-width: 450px; 
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .status-card { 
+            background: var(--card); 
+            padding: 24px; border-radius: 24px; 
+            border: 2px solid #1e293b;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+            transition: border-color 0.3s ease;
+            position: relative;
+        }
+
+        canvas {
+            width: 100%; height: 140px; /* Un peu plus haut pour la visibilité */
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            margin: 15px 0;
+            display: block;
+        }
+
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        button { 
+            background: var(--accent); color: var(--bg); 
+            border: none; padding: 18px; border-radius: 14px; 
+            font-weight: 800; cursor: pointer; transition: 0.2s;
+            -webkit-tap-highlight-color: transparent; /* Enlève le flash gris au clic sur iOS */
+        }
+
+        button#downloadBtn { background: #1e293b; color: #94a3b8; }
+        button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        #log { 
+            background: rgba(15, 23, 42, 0.8); 
+            border-radius: 16px; padding: 15px;
+            max-height: 250px; overflow-y: auto;
+            border: 1px solid #1e293b;
+        }
+
+        .log-entry { 
+            padding: 10px; border-bottom: 1px solid #1e293b; 
+            animation: fadeIn 0.5s ease;
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-50px); } to { opacity: 1; transform: translateY(0); } }
+
+        audio { 
+            width: 100%; height: 35px; margin-top: 10px; 
+            filter: invert(1) hue-rotate(180deg); /* Lecteur audio sombre */
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <h1 style="font-weight: 200; text-align: center; color: var(--accent); margin: 20px 0;">ZEN<b style="font-weight: 800;">SLEEP</b></h1>
+        
+        <div class="status-card" id="mainCard">
+            <div id="statusText" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: #64748b; font-weight: 600;">Moniteur de flux respiratoire</div>
+            
+            <canvas id="scope"></canvas>
+            
+            <div class="controls">
+                <button id="startBtn">DÉMARRER</button>
+                <button id="downloadBtn" disabled>RAPPORT</button>
+            </div>
+        </div>
+
+        <div style="font-size: 0.7rem; color: #475569; margin-bottom: 8px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Journal des incidents nocturnes</div>
+        <div id="log"></div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

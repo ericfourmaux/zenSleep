@@ -1,0 +1,22 @@
+{
+  "name": "ZenSleep - Tracker Apnée",
+  "short_name": "ZenSleep",
+  "description": "Moniteur de flux respiratoire nocturne",
+  "start_url": "index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "icons": [
+    {
+      "src": "zenSleep.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "zenSleep.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
