@@ -49,6 +49,14 @@ async function requestWakeLock() {
 }
 
 startBtn.onclick = async function() {
+    if (!isMonitoring) {
+        await startTracking();
+    } else {
+        stopTracking();
+    }
+};
+
+async function startTracking() {
     try {
         // Demande d'accès micro
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -61,7 +69,6 @@ startBtn.onclick = async function() {
         analyser.fftSize = 2048;
         dataArray = new Uint8Array(analyser.frequencyBinCount);
 
-        // Configuration Enregistreur
         mediaRecorder = new MediaRecorder(stream);
         let chunks = [];
         mediaRecorder.ondataavailable = e => chunks.push(e.data);
@@ -75,16 +82,38 @@ startBtn.onclick = async function() {
         await requestWakeLock();
         
         isMonitoring = true;
-        this.disabled = true;
-        this.innerText = "ANALYSE EN COURS...";
-        this.style.background = "#1e293b";
-        this.style.color = "#475569";
+        startBtn.innerText = "ARRÊTER LE SUIVI";
+        startBtn.style.background = "var(--danger)"; // Rouge pour indiquer qu'on peut couper
+        startBtn.style.color = "white";
         
+        statusText.innerText = "🔴 Analyse en cours...";
         renderLoop();
     } catch (err) {
-        alert("L'accès au micro est requis pour le suivi.");
+        alert("L'accès au micro est requis.");
     }
-};
+}
+
+function stopTracking() {
+    isMonitoring = false;
+    
+    // 1. Fermer l'AudioContext pour libérer le micro (le voyant orange du téléphone s'éteint)
+    if (audioCtx) {
+        audioCtx.close();
+    }
+
+    // 2. Relâcher le WakeLock (permet à l'écran de s'éteindre à nouveau)
+    if (wakeLock) {
+        wakeLock.release().then(() => wakeLock = null);
+    }
+
+    // 3. Réinitialiser l'interface
+    startBtn.innerText = "DÉMARRER";
+    startBtn.style.background = "var(--accent)";
+    startBtn.style.color = "var(--bg)";
+    statusText.innerText = "Analyse terminée - Rapport prêt.";
+    
+    addLogText("✅ Suivi arrêté manuellement.");
+}
 
 // --- 5. BOUCLE D'ANALYSE ET RENDU ---
 function renderLoop() {
